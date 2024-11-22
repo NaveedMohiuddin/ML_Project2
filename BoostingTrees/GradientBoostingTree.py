@@ -15,24 +15,24 @@ class CustomGradientBoostingRegressor:
         """
         Fits the gradient boosting model.
         """
-        # Initialize model with a constant value (mean of y)
+        #starting with a constant value (mean of y)
         self.initial_prediction = np.mean(y)
         current_prediction = np.full_like(y, self.initial_prediction, dtype=float)
 
         for estimator in range(self.n_estimators):
-            # Calculate residual errors
+            # Calculate residual errors to know how far we are from the actual target
             residuals = y - current_prediction
 
-            # Fit a regression tree to the residuals
+            # Training a tree to fix these residuals
             tree = DecisionTreeRegressor(max_depth=self.max_depth, min_samples_split=self.min_samples_split)
             tree.fit(X, residuals)
             self.trees.append(tree)
 
-            # Update predictions
+            # updating predictions
             update = tree.predict(X)
             current_prediction += self.learning_rate * update
 
-            # Track loss
+            # Tracking loss
             loss = mean_squared_error(y, current_prediction)
             self.loss_history.append(loss)
 
@@ -55,12 +55,15 @@ class DecisionTreeRegressor:
         self.tree = None
 
     def fit(self, X, y):
+        #For Building the decision tree.
         self.tree = self._build_tree(X, y, depth=0)
 
     def predict(self, X):
+        #Predictng the target values for input data
         return np.array([self._predict_row(row, self.tree) for row in X])
 
     def _build_tree(self, X, y, depth):
+        #Recursive method to for constructing the decision tree
         num_samples, num_features = X.shape
         if depth >= self.max_depth or num_samples < self.min_samples_split or np.std(y) == 0:
             return np.mean(y)
@@ -106,6 +109,7 @@ class DecisionTreeRegressor:
         return best_split if min_error < float("inf") else None
 
     def _predict_row(self, row, tree):
+        #Predicting the target value for a single data row
         if isinstance(tree, dict):
             feature = tree["feature"]
             threshold = tree["threshold"]
