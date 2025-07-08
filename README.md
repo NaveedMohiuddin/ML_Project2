@@ -1,9 +1,3 @@
-# Project 2
-
-# Submitted by:
-- **Sana Samad**: A20543001
-- **Naveed Mohiuddin**: A20540067
-- **Owaiz Majoriya**: A20546104
 
 ---
 
